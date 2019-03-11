@@ -17,17 +17,49 @@ public class ExecutorsClient {
          * 创建线程的工厂，通过自定义的线程工厂可以给每个新建的线程设置一个具有识别度的线程名
          */
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
-                .setNameFormat("demo-pool-%d").build();
+                .setNameFormat("threadPool-%d").build();
 
         //Common Thread Pool
-        ExecutorService pool = new ThreadPoolExecutor(5, 200,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        LinkedBlockingQueue<Runnable> queue =
+                new LinkedBlockingQueue<>(5);
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(5, 10,
+                0L, TimeUnit.SECONDS,
+                queue, namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        try {
+            for (int i=1;i<=16;i++) {
+                pool.execute(new ThreadPoolTest());
+        //            System.out.println("线程池中活跃的线程数： " + pool.getPoolSize());
+        //            if (queue.size() > 0)
+        //            {
+        //                System.out.println("----------------队列中阻塞的线程数" + queue.size());
+        //            }
+            }
+        } catch (RejectedExecutionException e) {
+            e.printStackTrace();
+            // 关闭线程池
+            pool.shutdown();
+        }
 
-        pool.execute(()-> System.out.println(Thread.currentThread().getName()));
         pool.shutdown();//gracefully shutdown
 
 
+    }
+
+    static class ThreadPoolTest implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            try
+            {
+                System.out.println(Thread.currentThread().getName()+" is running");
+                Thread.sleep(600);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
