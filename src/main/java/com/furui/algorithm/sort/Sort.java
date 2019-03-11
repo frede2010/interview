@@ -104,4 +104,12 @@ public class Sort {
             }
         }
     }
+
+    /**
+     * 测试我能不能push
+     * @param nums
+     */
+    public static void testMyPush(int[] nums){
+
+    }
 }
