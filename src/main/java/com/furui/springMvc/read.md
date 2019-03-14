@@ -1,10 +1,10 @@
 <h2>SpringMVC执行原理</h2>
-DispatcherServlet表示前置控制器，是整个SpringMVC的控制中心。用户发出请求，DispatcherServlet接收请求并拦截请求。
-假设请求链接是：http://localhost:9999/SpringMVC/input-product  
-如上url拆分成三部分：  
-http://localhost:9999 服务器域名  
-SpringMVC部署在服务器(http://localhost:9999)上的web站点  
-input-product表示控制器  
+　　DispatcherServlet表示前置控制器，是整个SpringMVC的控制中心。用户发出请求，DispatcherServlet接收请求并拦截请求。
+
+　　假设请求链接是：http://localhost:9999/SpringMVC/input-product  ，如上url拆分成三部分：  
+* http://localhost:9999 服务器域名  
+* SpringMVC部署在服务器(http://localhost:9999)上的web站点  
+* input-product表示控制器  
 通过分析，如上url表示为：请求位于服务器localhost:9999上的SpringMVC站点的input-product控制器  
 > 1.DispatcherServlet表示前置控制器，是整个SpringMVC的控制中心。用户发出请求，DispatcherServlet接收请求并拦截请求  
 2.HandlerMapping为处理器映射。DispatcherServlet调用HandlerMapping,HandlerMapping根据请求url查找Handler  
