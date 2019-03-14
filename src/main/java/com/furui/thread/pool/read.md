@@ -1,7 +1,4 @@
-<h1>ThreadPoolExecutor</h1>
-
-Executors是java线程池的工厂类，通过它可以快速初始化一个符合业务需求的线程池，如Executors.newFixedThreadPool方法可以生成一个拥有固定线程数的线程池。  
-其本质是通过不同的参数初始化一个ThreadPoolExecutor对象。
+<h2>ThreadPoolExecutor</h2>
 ```
 public ThreadPoolExecutor(int corePoolSize,
                           int maximumPoolSize,
@@ -43,6 +40,13 @@ keepAliveTime的单位；
 当然也可以根据应用场景实现RejectedExecutionHandler接口，自定义饱和策略，如记录日志或持久化存储不能处理的任务
 
 ---
+<h2>Executors</h2>
+Executors是java线程池的工厂类，通过它可以快速初始化一个符合业务需求的线程池，如Executors.newFixedThreadPool方法可以生成一个拥有固定线程数的线程池。  
+其本质是通过不同的参数初始化一个ThreadPoolExecutor对象。
+1. CachedThreadPool:可缓存的线程池，该线程池中没有核心线程，非核心线程的数量为Integer.max_value，就是无限大，当有需要时创建线程来执行任务，没有需要时回收线程，适用于耗时少，任务量大的情况。  
+2. SecudleThreadPool:周期性执行任务的线程池，按照某种特定的计划执行线程中的任务，有核心线程，但也有非核心线程，非核心线程的大小也为无限大。适用于执行周期性的任务。  
+3. SingleThreadPool:只有一条线程来执行任务，适用于有顺序的任务的应用场景。  
+4. FixedThreadPool:定长的线程池，有核心线程，核心线程的即为最大的线程数量，没有非核心线程  
 > 线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。   
 说明：Executors各个方法的弊端：  
 1）newFixedThreadPool和newSingleThreadExecutor:  
