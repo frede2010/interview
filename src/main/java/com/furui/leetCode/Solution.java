@@ -1,14 +1,6 @@
 package com.furui.leetCode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class Solution {
 	
@@ -173,12 +165,15 @@ public class Solution {
 	 * @return
 	 */
 	public boolean isValid(String s) {
-		if(s == null || s == "") return false;
+		if(s == null || s == "") {
+			return false;
+		}
 		Stack<Character> stack = new Stack<>();
 		char[] ch = s.toCharArray();
 		for(char c : ch){
-			if(c == '(' || c == '{' || c == '[') stack.push(c);
-			else if(c == ')' && !stack.isEmpty() && stack.pop() == '(') {
+			if(c == '(' || c == '{' || c == '[') {
+				stack.push(c);
+			} else if(c == ')' && !stack.isEmpty() && stack.pop() == '(') {
 				continue;
 			}else if(c == '}' && !stack.isEmpty() && stack.pop() == '{')  {
 				continue;
@@ -188,8 +183,7 @@ public class Solution {
 				return false;
 			}
 		}
-		if(stack.isEmpty()) return true;
-		else return false;
+		return stack.isEmpty();
     }
 	
 	/**
@@ -202,14 +196,28 @@ public class Solution {
 	 * }
 	 */
 	public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-		return l2;
+		ListNode dummyHead = new ListNode(0);
+		ListNode tail = dummyHead;
+		while (l1 != null && l2 != null) {
+			if (l1.val < l2.val) {
+				tail.next = l1;
+				l1 = l1.next;
+			} else {
+				tail.next = l2;
+				l2 = l2.next;
+			}
+			tail = tail.next;
+		}
+
+		if (l1 != null) {
+			tail.next = l1;
+		}
+		if (l2 != null) {
+			tail.next = l2;
+		}
+
+		return dummyHead.next;
     }
-	
-	public class ListNode {
-		int val;
-		ListNode next;
-		ListNode(int x) { val = x; }
-	}
 	
 	/**
 	 * 8.3Sum
@@ -228,8 +236,12 @@ public class Solution {
 				while(low < high){
 					if(nums[low] + nums[high] == reverse){
 						result.add(Arrays.asList(nums[i], nums[low], nums[high]));
-						while (low < high && nums[low] == nums[low+1]) low++;// skip same result
-	                    while (low < high && nums[high] == nums[high-1]) high--;// skip same result
+						while (low < high && nums[low] == nums[low+1]) {
+							low++;// skip same result
+						}
+	                    while (low < high && nums[high] == nums[high-1]) {
+							high--;// skip same result
+						}
 	                    low++; high--;
 					}else if(nums[low] + nums[high] < reverse){
 						low++;

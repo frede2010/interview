@@ -95,10 +95,11 @@ public class MyLinkedList {
 		final Node p = node.prev;
 		final Node newNode = new Node(node, p, obj);
 		node.prev = newNode;
-		if(p == null)
+		if(p == null) {
 			first = newNode;
-		else
-			p.next = newNode; 
+		} else {
+			p.next = newNode;
+		}
 		size++;
 	}
 	
