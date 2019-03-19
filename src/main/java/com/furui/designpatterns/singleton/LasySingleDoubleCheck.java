@@ -12,6 +12,7 @@ public class LasySingleDoubleCheck {
         if (instance == null) {
             synchronized (LasySingleDoubleCheck.class){
                 if(instance == null){
+                    //非原子操作，仍可能存在极小概率的线程不安全情况(参阅CAS)
                     instance = new LasySingleDoubleCheck();
                 }
             }
