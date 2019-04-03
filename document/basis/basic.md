@@ -67,7 +67,9 @@
 * final, finally, finalize 的区别
    1. final
       * 修饰符（关键字）如果一个类被声明为final，意味着它不能再派生出新的子类，不能作为父类被继承。因此一个类不能既被声明为 abstract的，又被声明为final的。
-      * 将变量或方法声明为final，可以保证它们在使用中不被改变。被声明为final的变量必须在声明时给定初值，而在以后的引用中只能读取，不可修改。被声明为final的方法也同样只能使用，不能重写。
+      * 将变量或方法声明为final，可以保证它们在使用中不被改变。
+         1. 被声明为final的变量必须在声明时给定初值，而在以后的引用中只能读取，不可修改。对final变量的访问在编译期间都会直接被替代为真实的值。
+         2. 被声明为final的方法也同样只能使用，不能重写。
  
 * Exception、Error、运行时异常与一般异常有何异同
    * Exception和Error都有一个共同的基类Throwable
@@ -91,9 +93,36 @@
    * 由基本类型向对应的包装类转换称为装箱，例如把 int 包装成 Integer 类的对象
    * 包装类向对应的基本类型转换称为拆箱，例如把 Integer 类的对象重新简化为 int
 * String、StringBuilder、StringBuffer
-   * 
+   * String
+      1. String类是final类，也即意味着String类不能被继承，并且它的成员方法都默认为final方法.
+      2. String类是通过char数组来保存字符串的。对String对象的任何改变都不影响到原对象，相关的任何change操作都会生成新的对象
+      3. String.intern() String的intern()方法会查找在常量池中是否存在一份equal相等的字符串,如果有则返回该字符串的引用,如果没有则添加自己的字符串进入常量池， 到jdk1.7后会把对象的引用存进常量池。
+      4. new String("str")会在编译期间存进常量池中一份对象，在运行期间存进堆中一份对象
+      5. new String("str") + new String("str") 会在编译期间存进常量池1份str对象，运行期间存进3分对象，包括2份str和相加后的值
+   * StringBuilder
+      1. 是对String拼装的优化类，事实上，string+="hello"的操作事实上会自动被JVM优化成：
+          ```
+          StringBuilder str = new StringBuilder(string);
+          str.append("hello");
+          str.toString();
+          ```   
+      2. String 每次拼装都会生成新的对象，StringBuilder.append则只有一个对象。
+   *  StringBuffer
+      * 线程安全的StringBuilder
+      
 * 重载和重写的区别
+   * 重载 Overloading
+      * 方法重载是指同一个类中的多个方法具有相同的名字,但这些方法具有不同的参数列表,即参数的数量或参数类型不能完全相同。
+         1. 返回值类型可以相同也可以不相同。不能以返回型别作为重载函数的区分标准
+   * 重写 Overriding
+      * 方法重写是存在子父类之间的,子类定义的方法与父类中的方法具有相同的方法名字,相同的参数表和相同的返回类型
+         1. 子类中不能重写父类中的final方法；
+         2. 子类中必须重写父类中的abstract方法。
+         
 * 抽象类和接口有什么区别
+   * 抽象类 abstract class
+   
+   * 接口 interface
 * 说说反射的用途及实现
 * 说说自定义注解的场景及实现
 * HTTP请求的GET与POST方式的区别
