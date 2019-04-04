@@ -140,10 +140,89 @@
       
       
 * 说说反射的用途及实现
+   * 程序中一般的对象类型都是在编译期就确定下来的，而反射可以动态的创建对象并调用其属性，这样对象的类型在编译期是未知的。所以我们可以通过反射机制直接创建对象即使这个对象在编译期是未知的。
+   * 用途
+      1. 当我们在使用 IDE（如 Eclipse\IDEA）时，当我们一按 (“.”)点号，编译器就会自动列出它的属性或方法，这里就会用到反射。
+      2. 很多框架（比如 Spring）都是配置化的（比如通过 XML文件配置 JavaBean，Action之类的），为了保证框架的通用性，他们可能根据配置文件加载不同的对象或类，调用不同的方法，这个时候就必须用到反射——运行时动态加载需要加载的对象。
+      3. JDBC 的 classForName()
+      4. 判断是否为某个类的实例
+   * 实现
+      1. getClass
+      2. forName
+      3. .class
 * 说说自定义注解的场景及实现
+   * 基本概念
+      1. Java文件叫做Annotation，用@interface表示
+      2. 元注解：@interface上面按需要注解上一些东西，JDK自带的注解，注解到我们自定义的注解上
+         * @Retention  
+         表示需要在什么级别保存该注释信息，用于描述注解的生命周期,也是一个枚举RetentionPoicy来决定
+         * @Target  
+         用于描述注解的使用范围,有一个枚举ElementType来指定
+         * @Document  
+         如果用javadoc生成文档时，想把注解也生成文档，就带这个
+         * @Inherited  
+         如果一个使用了@Inherited修饰的annotation类型被用于一个class，则这个annotation将被用于该class的子类
+      3. 注解的保留策略：
+         * @Retention(RetentionPolicy.SOURCE)   // 注解仅存在于源码中，在class字节码文件中不包含
+         * @Retention(RetentionPolicy.CLASS)    // 默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得
+         * @Retention(RetentionPolicy.RUNTIME)  // 注解会在class字节码文件中存在，在运行时可以通过反射获取到
+      4. 注解的作用目标：
+         * @Target(ElementType.TYPE)             // 接口、类、枚举、注解
+         * @Target(ElementType.FIELD)            // 字段、枚举的常量
+         * @Target(ElementType.METHOD)           // 方法
+         * @Target(ElementType.PARAMETER)        // 方法参数
+         * @Target(ElementType.CONSTRUCTOR)      // 构造函数
+         * @Target(ElementType.LOCAL_VARIABLE)   // 局部变量
+         * @Target(ElementType.ANNOTATION_TYPE)  // 注解
+         * @Target(ElementType.PACKAGE)          // 包
+      5. 注解包含在javadoc中：  
+         @Documented
+      6. 注解可以被继承：  
+         @Inherited
+      7. 使用场景
+         * spring中的各种注解，@Controller @Service
+         
 * HTTP请求的GET与POST方式的区别
+   * GET和POST是HTTP请求的两种基本方法，底层均为TCP/IP
+   * 区别
+      1. GET 请求可被缓存
+      2. GET 请求保留在浏览器历史记录中
+      3. GET 请求可被收藏为书签
+      4. GET 请求不应在处理敏感数据时使用
+      5. GET 请求有长度限制
+      6. GET 请求只应当用于取回数据
+      
 * Session与Cookie区别
+   * session  
+   　　session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。  
+   　　程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，
+   服务器就按照session id把这个session检索出来使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，
+   session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。保存这个session id的方式可以采用cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发送给服务器。
+   一般这个cookie的名字都是类似于SEEESIONID。但cookie可以被人为的禁止，则必须有其他机制以便在cookie被禁止时仍然能够把session id传递回服务器。
+   　　经常被使用的一种技术叫做URL重写，就是把session id直接附加在URL路径的后面。还有一种技术叫做表单隐藏字段。就是服务器会自动修改表单，添加一个隐藏字段，以便在表单提交时能够把session id传递回服务器。
+   * cookie  
+   　　正统的cookie分发是通过扩展HTTP协议来实现的，服务器通过在HTTP的响应头中加上一行特殊的指示以提示浏览器按照指示生成相应的cookie。
+   然而纯粹的客户端脚本如JavaScript或者VBScript也可以生成cookie。而cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。
+   浏览器检查所有存储的cookie，如果某个cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该cookie附在请求资源的HTTP请求头上发送给服务器。  
+   　　cookie的内容主要包括：名字，值，过期时间，路径和域。路径与域一起构成cookie的作用范围。
+   若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。
+   这种生命期为浏览器会话期的cookie被称为会话cookie。会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。
+   若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。
+   存储在硬盘上的cookie可以在不同的浏览器进程间共享，比如两个IE窗口。而对于保存在内存里的cookie，不同的浏览器有不同的处理方式
+   * 区别  
+   1. cookie数据存放在客户的浏览器上，session数据放在服务器上。
+   2. cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗
+      考虑到安全应当使用session。
+   3. session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能
+      考虑到减轻服务器性能方面，应当使用COOKIE。
+   4. 单个cookie保存的数据不能超过4K，很多浏览器都限制一个站点最多保存20个cookie。
+   
 * 列出自己常用的JDK包
+   1. java.lang
+   2. java.util
+   3. java.io
+   4. java.time
+   5. java.text
 * MVC设计思想
 * equals与==的区别
 * hashCode和equals方法的区别与联系
