@@ -9,10 +9,12 @@ public class LasySingleDoubleCheck {
     private LasySingleDoubleCheck(){}
     private static LasySingleDoubleCheck instance;
     public static synchronized LasySingleDoubleCheck getInstance(){
-        if (null == instance) {
+        if (instance == null) {
             synchronized (LasySingleDoubleCheck.class){
-                //非原子操作，仍可能存在极小概率的线程不安全情况
-                instance = new LasySingleDoubleCheck();
+                if(instance == null){
+                    //非原子操作，仍可能存在极小概率的线程不安全情况(参阅CAS)
+                    instance = new LasySingleDoubleCheck();
+                }
             }
         }
         return instance;
