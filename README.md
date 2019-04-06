@@ -1,3 +1,3 @@
 # interview
 
-just record my note for interview preparation
+just record my note for java
