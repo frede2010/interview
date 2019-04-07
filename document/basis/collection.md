@@ -38,8 +38,11 @@
    * ConcurrentHashMap的数据结构已经接近HashMap，相对而言，ConcurrentHashMap只是增加了同步的操作来控制并发，从JDK1.7版本的ReentrantLock+Segment+HashEntry，到JDK1.8版本中synchronized+CAS+HashEntry+红黑树
    
 * **HashMap 的工作原理及代码实现，什么时候用到红黑树**
-
+    * http://www.importnew.com/28263.html
+    
 * **多线程情况下HashMap死循环的问题**
+   * https://www.cnblogs.com/dongguacai/p/5599100.html
+   
 * **HashMap出现Hash DOS攻击的问题**
 * **ConcurrentHashMap 的工作原理及代码实现，如何统计所有的元素个数**
 * **手写简单的HashMap**
