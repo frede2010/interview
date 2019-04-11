@@ -18,7 +18,7 @@ public class AbortPolicyDemo {
 
         // 创建线程池。线程池的"最大池大小"和"核心池大小"都为1(THREADS_SIZE)，"线程池"的阻塞队列容量为1(CAPACITY).拒绝策略为"抛出异常"
         ThreadPoolExecutor pool = new ThreadPoolExecutor(THREADS_SIZE, THREADS_SIZE, 0, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(CAPACITY), new ThreadPoolExecutor.AbortPolicy());
+                new ArrayBlockingQueue<>(CAPACITY), new ThreadPoolExecutor.AbortPolicy());
 
         try {
 

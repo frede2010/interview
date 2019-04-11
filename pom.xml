@@ -82,6 +82,14 @@
       <artifactId>fastjson</artifactId>
       <version>1.2.56</version>
     </dependency>
+    <!--动态代理-->
+    <!-- https://mvnrepository.com/artifact/cglib/cglib -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.2.10</version>
+    </dependency>
+
 
     <!-- 日志相关依赖 -->
     <dependency>
