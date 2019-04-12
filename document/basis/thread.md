@@ -25,7 +25,14 @@
       * 总结
          1. wait()/notify()要集合synchronized关键字一起使用，因为他们都需要首先获取该对象的对象锁；
          2. wait方法是释放锁，notify方法是不释放锁的；
-  
+   * 线程另一种是Lock
+      * Lock lock = new ReentrantLock();  
+        Condition condition = lock.newCondition();
+      1. Object的wait()方法相当于Condition类中的await()方法； 
+      2. Object的notify()方法相当于Condition类中的signal()方法； 
+      3. Object的notifyAll()方法相当于Condition类中的signalAll()方法
+      * Condition按字面意思理解就是条件，当然，我们也可以将其认为是条件进行使用，这样的话我们可以通过上述的代码创建多个Condition条件，我们就可以根据不同的条件来控制现成的等待和通知。而我们还知道，在使用关键字synchronized与wait()方法和notify()方式结合实现线程间通信的时候，notify/notifyAll的通知等待的线程时是随机的，显然使用Condition相对灵活很多，可以实现”选择性通知”
+      
 * **说说 CountDownLatch、CyclicBarrier 原理和区别**
    * CountDownLatch 倒计时
       * CountDownLatch是一个非常实用的多线程控制工具类，称之为“倒计时器”，它允许一个或多个线程一直等待，直到其他线程的操作执行完后再执行。
