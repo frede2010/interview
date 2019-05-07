@@ -13,7 +13,7 @@ public class Sort {
     public static void dobbleSort(int[] nums){
         int length = nums.length;
         for (int i = 0; i < length - 1; i++){
-            for (int j = 0; j < length - 1; j++) {
+            for (int j = 0; j < length - i - 1; j++) {
                 if (nums[j] > nums [j+1]){
                     nums[j] = nums[j]^nums[j+1];
                     nums[j+1] = nums[j]^nums[j+1];
@@ -29,13 +29,18 @@ public class Sort {
      * 选择一个基准元素,通常选择第一个元素或者最后一个元素,通过一趟扫描，将待排序列分成两部分,
      * 一部分比基准元素小,一部分大于等于基准元素,此时基准元素在其排好序后的正确位置,
      * 然后再用同样的方法递归地排序划分的两部分。
-     * @param nums
+     * @param numbers
+     * @param low
+     * @param high
      */
-    public static void quickSort(int[] nums){
-        int middle = middle(nums, 0, nums.length - 1);
-        middle(nums, 0, middle - 1);
-        middle(nums, middle + 1, nums.length - 1);
+    public static void quickSort(int[] numbers, int low, int high){
+        if(low < high){
+            int middle = Sort.middle(numbers, low, high);
+            quickSort(numbers, low, middle-1);
+            quickSort(numbers, middle+1, high);
+        }
     }
+
 
     /**
      *
@@ -45,20 +50,21 @@ public class Sort {
      * @return
      */
     private static int middle(int[] numbers, int low, int high){
-        int base = numbers[low];
-        while (low < high) {
-            while (low < high && base <= numbers[high]) {
+        int baseElement = numbers[low];
+        while(low < high){
+            while(low<high && baseElement <= numbers[high]) {
                 high--;
             }
             numbers[low] = numbers[high];
-            while (low < high && base >= numbers[low]){
-                low ++;
+            while(low<high && numbers[low] <= baseElement) {
+                low++;
             }
             numbers[high] = numbers[low];
         }
-        numbers[low] = base;
+        numbers[low] = baseElement;
         return low;
     }
+
 
     /**
      * 插入排序

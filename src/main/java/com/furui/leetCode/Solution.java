@@ -253,8 +253,13 @@ public class Solution {
 		}
 		return result;
     }
-	
-	 public int maxProfit(int[] prices) {
+
+	/**
+	 * 最大利润买卖点
+	 * @param prices
+	 * @return
+	 */
+	public int maxProfit(int[] prices) {
 		 int length = prices.length;
 		 int max = 0;
 		 for(int i = length - 1; i>=1; i--){
@@ -269,4 +274,25 @@ public class Solution {
 		 }
 		 return max;
 	 }
+
+
+	/**
+	 * 找出数组中第二大的数
+	 * @param nums
+	 * @return
+	 */
+	public int getSec(int[] nums) {
+		int first = Integer.MIN_VALUE, second = first;
+		for(int i = 0, len = nums.length; i < len; i++) {
+			if(nums[i] > second) {
+				if(nums[i] > first) {
+					second = first;
+					first = nums[i];
+				} else {
+					second = nums[i];
+				}
+			}
+		}
+		return second;
+	}
 }

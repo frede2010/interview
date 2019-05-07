@@ -8,9 +8,9 @@ public class Test {
     public static void main(String[] args) {
         int[] nums = {2,1,3,6,5,10,12,8,11,9,0};
 //        Sort.dobbleSort(nums);
-//        Sort.quickSort(nums);
+        Sort.quickSort(nums, 0, nums.length - 1);
 //        Sort.insertSort(nums);
-        Sort.selectSort(nums);
+//        Sort.selectSort(nums);
         printArray(nums);
     }
 

@@ -82,6 +82,22 @@
       <artifactId>fastjson</artifactId>
       <version>1.2.56</version>
     </dependency>
+    <!--动态代理-->
+    <!-- https://mvnrepository.com/artifact/cglib/cglib -->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>3.2.10</version>
+    </dependency>
+
+    <!-- CXF webservice -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+      <version>3.1.11</version>
+    </dependency>
+    <!-- CXF webservice -->
+
 
     <!-- 日志相关依赖 -->
     <dependency>
