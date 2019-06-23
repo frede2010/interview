@@ -1,7 +1,11 @@
 package com.wangheng.collection;
 
 import java.util.*;
-
+/**
+ * @author wangheng
+ * time 20190623
+ * 集合类语法
+ */
 public class TestCollection {
 
     public static void main(String[] args) {
@@ -32,7 +36,7 @@ public class TestCollection {
         //set
         set.add("");
         set.add(null);
-        
+
 
     }
 }
