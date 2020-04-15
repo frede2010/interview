@@ -295,4 +295,142 @@ public class Solution {
 		}
 		return second;
 	}
+	/**
+	 * Definition for singly-linked list.
+	 * public class ListNode {
+	 *     int val;
+	 *     ListNode next;
+	 *     ListNode(int x) { val = x; }
+	 * }
+	 */
+	public ListNode mergeTwoListsHe(ListNode l1, ListNode l2) {
+		ListNode dummyHead = new ListNode(0);
+		ListNode curr = dummyHead;
+		while(l1 != null && l2 != null){
+			if(l1.val < l2.val){
+				curr.next = l1;
+				l1 = l1.next;
+			} else {
+				curr.next = l2;
+				l2 = l2.next;
+			}
+			curr = curr.next;
+		}
+		if(l1 == null){
+			curr.next = l2;
+		}
+		if(l2 == null){
+			curr.next = l1;
+		}
+		return dummyHead.next;
+	}
+	/**
+	 * 反转字符串，堆栈方式
+	 */
+	public static String reverseString(String str){
+		if(str == null || str.equals("")){
+			return str;
+		}
+		Stack<Character> characterStack = new Stack<>();
+		char[] charArray = str.toCharArray();
+		for(char strSingle : charArray){
+			characterStack.push(strSingle);
+		}
+		int k = 0;
+		while(!characterStack.empty()){
+			charArray[k++] = characterStack.pop();
+		}
+		return String.copyValueOf(charArray);
+	}
+
+	/**
+	 * 反转单词
+	 * 双端队列方式
+	 */
+	public static String reverceWord(String s){
+		int left = 0, right = s.length() - 1;
+		//去掉开头的空白字符
+		while(left <= right && s.charAt(left) == ' ') ++left;
+		//去掉结尾的空白字符
+		while(left <= right && s.charAt(right) == ' ') --right;
+
+		Deque<String> d = new ArrayDeque<>();
+		StringBuilder word = new StringBuilder();
+
+		while(left <= right){
+			char c = s.charAt(left);
+			if((word.length()) != 0 && (c == ' ')){
+				// 将单词 push 到队列的头部
+				d.offerFirst(word.toString());
+				word.setLength(0);
+			} else if(c!= ' '){
+				word.append(c);
+			}
+			++left;
+		}
+		d.offerFirst(word.toString());
+		return String.join(" ", d);
+	}
+
+	/**
+	 * 反转链表
+	 * @param head
+	 * @return
+	 */
+	public ListNode reverseListNode(ListNode head){
+		ListNode prev = null;
+		ListNode curr = head;
+		while(curr != null){
+			ListNode tempNode = curr.next;
+			curr.next = prev;
+			prev = curr;
+			curr = tempNode;
+		}
+		return prev;
+	}
+	/**
+	 * 删除链表中倒数第K哥节点
+	 */
+	public ListNode removeNthFromEnd(ListNode head, int n) {
+		ListNode dummy = new ListNode(0);
+		dummy.next = head;
+		ListNode first = dummy;
+		ListNode second = dummy;
+		// Advances first pointer so that the gap between first and second is n nodes apart
+		for (int i = 1; i <= n + 1; i++) {
+			first = first.next;
+		}
+		// Move first to the end, maintaining the gap
+		while (first != null) {
+			first = first.next;
+			second = second.next;
+		}
+		second.next = second.next.next;
+		return dummy.next;
+	}
+
+	/**
+	 * 删除链表中的节点
+	 * @param node
+	 */
+	public void deleteNode(ListNode node) {
+		node.val = node.next.val;
+		node.next = node.next.next;
+	}
+
+	/**
+	 * 返回倒数第 k 个节点
+	 */
+	public int kthToLast(ListNode head, int k) {
+		ListNode target=head;
+		while(head!=null){
+			k--;
+			if(k<0){
+				k=0;
+				target=target.next;
+			}
+			head=head.next;
+		}
+		return target.val;
+	}
 }
