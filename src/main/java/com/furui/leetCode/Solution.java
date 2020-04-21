@@ -1,6 +1,7 @@
 package com.furui.leetCode;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Solution {
 	
@@ -27,7 +28,7 @@ public class Solution {
         }
         return sumArray;
     }
-	
+
 	/**
 	 * 利用Map,时间复杂度O(n)
 	 * @param nums
@@ -54,15 +55,15 @@ public class Solution {
 	 * The input is assumed to be a 32-bit signed integer. Your function should return 0 when the reversed integer overflows. 
 	 */
 	 public int reverse(int x) {
-		int reverseNum = 0;
-        while(x != 0 && x % 10 == 0){
-        	int result = reverseNum * 10 + x % 10;
-        	if ((result - x % 10) / 10 != reverseNum)
-        		return 0;
-        	x = x / 10;
-        	reverseNum  = result;
-        }
-        return reverseNum;
+		 int rev = 0;
+		 while (x != 0) {
+			 int pop = x % 10;
+			 x /= 10;
+			 if (rev > Integer.MAX_VALUE/10 || (rev == Integer.MAX_VALUE / 10 && pop > 7)) return 0;
+			 if (rev < Integer.MIN_VALUE/10 || (rev == Integer.MIN_VALUE / 10 && pop < -8)) return 0;
+			 rev = rev * 10 + pop;
+		 }
+		 return rev;
 	 }
 	 
 	/**

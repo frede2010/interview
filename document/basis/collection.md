@@ -30,7 +30,7 @@
    2. HashTable不允许key和value为nul
    
 * **HashSet 和 HashMap 区别**
-   1. HashSet实现了Map接口,HashSet实现了Set接口
+   1. HashMap实现了Map接口,HashSet实现了Set接口
    2. HashSet底层是HashMap实现的，当HashSet add一个元素的时候，其实是望map里面put了一个key，value则是其内部默认的一个Object。所以set不允许重复的值
    
 * **HashMap 和 ConcurrentHashMap 的区别**
@@ -87,9 +87,66 @@
             * 不需要重新再计算hash
     
 * **多线程情况下HashMap死循环的问题**
-   1. 多线程put操作后，get操作导致死循环
-   2. 多线程put非null元素后，get操作得到null值
-   3. 多线程put操作，导致元素丢失
+   1. 多线程put操作后，get操作导致死循环（在rehash的过程中，关键的一步操作是transfer(newTable)，
+                                       这个操作会把当前Entry[] table数组的全部元素转移到新的table中，
+                                       这个transfer的过程在并发环境下会发生错误，导致数组链表中的链表形成循环链表，
+                                       在后面的get操作时e = e.next操作无限循环，Infinite Loop出现。
+   2. 多线程put非null元素后，get操作得到null值（
+     1 void  transfer(Entry[] newTable) {
+     2      Entry[] src = table;
+     3      int  newCapacity = newTable.length;
+     4      for  ( int  j =  0 ; j < src.length; j++) {
+     5          Entry e = src[j];
+     6          if  (e !=  null ) {
+     7              src[j] =  null ;//将table[j]设置为null,并发访问到 原table返回的就是null
+     8              do  {
+     9                  Entry next = e.next;
+    10                  int  i = indexFor(e.hash, newCapacity);
+    11                  e.next = newTable[i];
+    12                  newTable[i] = e;
+    13                  e = next;
+    14              }  while  (e !=  null );
+    15          }
+    16      }
+    17 }
+                 分析：线程1将src[j] = null;即将table[j] = null;因为代码第二行定义了Entry[] src = table;即src和table是对同一对象的引用。
+                                  
+                 这时切换到线程2，线程2此时若正在调用get(key)方法：
+                 public V get(Object key) {  
+                 
+                         if (key == null)  
+                 
+                             return getForNullKey();  
+                 
+                         int hash = hash(key.hashCode());  
+                 
+                         // indexFor方法取得key在table数组中的索引，table数组中的元素是一个链表结构，遍历链表，取得对应key的value  
+                 
+                         for (Entry e = table[indexFor(hash, table.length)]; e != null; e = e.next) {  
+                 
+                             Object k;  
+                 
+                             if (e.hash == hash && ((k = e.key) == key || key.equals(k)))  
+                 
+                                 return e.value;  
+                 
+                         }  
+                 
+                         return null; 
+                 }
+    若get(key)中key经hash和indexFor()计算后正好落到table[j]上，则此时取到的Entry为null（第11行），直接跳出for循环，来到第21行，return null，违反了错觉。
+                
+   3. 多线程put操作，导致元素丢失（考虑在多线程下put操作时，执行addEntry(hash, key, value, i)，如果有产生哈希碰撞，
+                      导致两个线程得到同样的bucketIndex去存储，就可能会出现覆盖丢失的情况：
+                      void addEntry(int hash, K key, V value, int bucketIndex)
+                      {
+                          Entry<K,V> e = table[bucketIndex];
+                          table[bucketIndex] = new Entry<K,V>(hash, key, value, e);
+                          //查看当前的size是否超过了我们设定的阈值threshold，如果超过，需要resize
+                          if (size++ >= threshold)
+                              resize(2 * table.length);
+                      }
+   
    
 * **HashMap出现Hash DOS攻击的问题**
    * 主要是构造大量hashcode相同的key的数据，然后请求服务器。服务器会在解析这个数据上花费大量时间（hash冲突，寻址），进而占满cpu
@@ -106,4 +163,27 @@
    * JDK1.8 synchronized + CAS + HashEntry
    
 * **看过那些Java集合类的源码**
- 
+
+* **为什么1.8 HashMap 要使用红黑树** *
+红黑树是一种含有红黑结点并能自平衡的二叉查找树。它必须满足下面性质：
+
+性质1：每个节点要么是黑色，要么是红色。
+性质2：根节点是黑色。
+性质3：每个叶子节点（NIL）是黑色。
+性质4：每个红色结点的两个子结点一定都是黑色。
+性质5：任意一结点到每个叶子结点的路径都包含数量相同的黑结点。
+        性质5.1：如果一个结点存在黑子结点，那么该结点肯定有两个子结点（根据性质5可得出）
+完美黑色平衡，区别于AVL是不完全平衡，查询快，插入删除需要时间，所以1.8并没有完全去掉链表而是到一定量之后才转变为红黑树
+        
+二叉查找树：
+若任意节点的左子树不空，则左子树上所有结点的值均小于它的根结点的值；
+若任意节点的右子树不空，则右子树上所有结点的值均大于它的根结点的值；
+任意节点的左、右子树也分别为二叉查找树。
+没有键值相等的节点（no duplicate nodes）。
+红黑树虽然本质上是一棵二叉查找树，但它在二叉查找树的基础上增加了着色和相关的性质使得红黑树相对平衡，
+从而保证了红黑树的查找、插入、删除的时间复杂度最坏为O(log n)。加快检索速率。
+
+
+红黑树相比avl树，在检索的时候效率其实差不多，都是通过平衡来二分查找。但对于插入删除等操作效率提高很多。
+红黑树不像avl树一样追求绝对的平衡，他允许局部很少的不完全平衡，这样对于效率影响不大，但省去了很多没有必要的调平衡操作，
+avl树调平衡有时候代价较大，所以效率不如红黑树。
