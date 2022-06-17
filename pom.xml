@@ -80,7 +80,7 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>fastjson</artifactId>
-      <version>1.2.56</version>
+      <version>1.2.83</version>
     </dependency>
     <!--动态代理-->
     <!-- https://mvnrepository.com/artifact/cglib/cglib -->
